@@ -1,5 +1,5 @@
 use ddnnife::int_hash::IntSet;
-use num::BigUint;
+use num::{BigInt, BigUint};
 use std::collections::HashSet;
 
 uniffi::custom_type!(usize, u64, {
@@ -14,10 +14,12 @@ uniffi::custom_type!(isize, i64, {
     try_lift: |builtin| Ok(builtin as isize),
 });
 
+// Big integer implementations of the consuming languages only provide a signed integer.
+// We therefore convert via `BigInt` in order to ensure the conversion to/from two's-complement is handled correctly.
 uniffi::custom_type!(BigUint, Vec<u8>, {
     remote,
-    lower: |bigint| bigint.to_bytes_be(),
-    try_lift: |vec| Ok(BigUint::from_bytes_be(&vec)),
+    lower: |bigint| BigInt::from(bigint).to_signed_bytes_be(),
+    try_lift: |vec| Ok(BigUint::try_from(BigInt::from_signed_bytes_be(&vec))?),
 });
 
 type IntSetu32 = IntSet<u32>;
