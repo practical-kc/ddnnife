@@ -23,6 +23,11 @@
       "matchCategories": ["rust"],
       "matchJsonata": ["isBreaking != true"],
       "enabled": false
+    },
+    {
+      "description": "Update GitHub Actions once a week",
+      "matchCategories": ["ci"],
+      "extends": ["schedule:weekly"]
     }
   ]
 }
